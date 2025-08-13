@@ -1,0 +1,54 @@
+bus-booking-system/
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── script.js
+│   └── images/
+├── backend/
+│   ├── java/
+│   │   └── BookingSystem.java
+│   └── php/
+│       ├── config.php
+│       ├── auth.php
+│       ├── booking.php
+│       └── search.php
+└── database/
+    ├── schema.sql
+    └── db_connect.php
+
+    *************************************************************
+    .
+├── admin/
+│   ├── bookings/
+│   │   ├── index.php
+│   │   ├── view.php
+│   │   └── edit.php
+│   ├── buses/
+│   │   ├── index.php
+│   │   ├── add.php
+│   │   └── edit.php
+│   ├── routes/
+│   ├── users/
+│   │   ├── index.php
+│   │   ├── view.php
+│   │   └── edit.php
+│   ├── reports/
+│   │   ├── index.php
+│   │   ├── financial.php
+│   │   └── bookings.php
+│   ├── payments/
+│   ├── settings/
+│   │   ├── system/
+│   │   ├── email/
+│   │   └── seo/
+│   ├── index.php
+│   ├── header.php
+│   ├── sidebar.php
+│   └── footer.php
+├── assets/
+│   └── css/
+│       └── admin.css
+├── config.php
+└── logs/
