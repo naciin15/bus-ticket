@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The LineBus Ticket Booking</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="frontend/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .city-suggestions {
+      position: absolute;
+      background: white;
+      border: 1px solid #ddd;
+      width: calc(100% - 40px);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .city-suggestions div {
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    .city-suggestions div:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <header class="sticky-header">
+    <div class="container nav-bar">
+      <div class="logo">
+        <span class="logo-icon"><i class="fas fa-bus"></i></span>
+        <span>LineBus.com</span>
+      </div>
+      <nav class="main-nav">
+        <a href="#"><i class="fas fa-calendar-alt"></i> Timetables</a>
+        <a href="#"><i class="fas fa-map-marker-alt"></i> Bus Stops</a>
+        <a href="#"><i class="fas fa-question-circle"></i> FAQ</a>
+        <a href="#"><i class="fas fa-phone-alt"></i> Contact</a>
+        <a href="#" id="manageBookingBtn"><i class="fas fa-suitcase"></i> Manage Booking</a>
+      </nav>
+      <div class="actions">
+        <div class="currency-selector">
+          <i class="fas fa-euro-sign"></i>
+          <select>
+            <option>EUR (€)</option>
+            <option>USD ($)</option>
+            <option>GBP (£)</option>
+          </select>
+        </div>
+        <a href="frontend/login_signup.php" class="login-btn">
+          <i class="fas fa-user"></i> 
+          <span id="loginText">Login/Signup</span>
+        </a>
+      </div>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <div class="container hero-content">
+        <div class="booking-card">
+          <div class="booking-tabs">
+            <button class="active"><i class="fas fa-shuttle-van"></i> Shuttle Bus</button>
+            <button><i class="fas fa-door-open"></i> Door2Gate</button>
+          </div>
+          <form id="bookingForm" action="frontend/bus_listing.php" method="GET">
+            <div class="input-group">
+              <i class="fas fa-map-marker-alt"></i>
+              <input type="text" name="departure_city" id="departure_city" placeholder="From / Departure" required autocomplete="off">
+              <div class="city-suggestions" id="departureSuggestions"></div>
+            </div>
+            <div class="input-group">
+              <i class="fas fa-flag-checkered"></i>
+              <input type="text" name="arrival_city" id="arrival_city" placeholder="To / Arrival" required autocomplete="off">
+              <div class="city-suggestions" id="arrivalSuggestions"></div>
+            </div>
+            <div class="trip-type">
+              <label class="radio-btn">
+                <input type="radio" name="trip_type" value="roundtrip" checked>
+                <span><i class="fas fa-exchange-alt"></i> Round Trip</span>
+              </label>
+              <label class="radio-btn">
+                <input type="radio" name="trip_type" value="oneway">
+                <span><i class="fas fa-arrow-right"></i> One Way</span>
+              </label>
+            </div>
+            <div class="date-group">
+              <div class="input-group">
+                <i class="fas fa-calendar-day"></i>
+                <input type="date" name="departure_date" placeholder="Outward journey" required min="<?= date('Y-m-d') ?>">
+              </div>
+              <div class="input-group return-date">
+                <i class="fas fa-calendar-day"></i>
+                <input type="date" name="return_date" placeholder="Return journey">
+              </div>
+            </div>
+            <div class="input-group">
+              <i class="fas fa-users"></i>
+              <select name="passengers">
+                <option value="1">1 Adult</option>
+                <option value="2">2 Adults</option>
+                <option value="3">3 Adults</option>
+                <option value="4">4 Adults</option>
+                <option value="5">5 Adults</option>
+              </select>
+            </div>
+            <button type="submit" class="search-btn">
+              <i class="fas fa-search"></i> Search Buses
+            </button>
+          </form>
+        </div>
+        <div class="hero-text">
+          <h1>Comfortable Shuttle Bus Services Across Europe</h1>
+          <p>
+            Our premium service provides seamless transportation to major European airports and cities. 
+            Why drive when you can relax and enjoy the journey?
+          </p>
+          <div class="hero-features">
+            <div class="feature">
+              <i class="fas fa-wifi"></i>
+              <span>Free WiFi</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-plug"></i>
+              <span>Power Outlets</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-suitcase"></i>
+              <span>Luggage Space</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-ticket-alt"></i>
+              <span>Easy Booking</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="offers-section">
+      <div class="container">
+        <h2>Discover Our <span class="highlight">Best Offers</span></h2>
+        <div class="offers-grid">
+          <div class="offer-card">
+            <img src="frontend/images/brussel.jpg" alt="Brussels Airport">
+            <div class="offer-badge">Popular</div>
+            <div class="offer-content">
+              <div class="offer-price">From €5</div>
+              <h3>Antwerp - Brussels Airport</h3>
+              <div class="offer-details">
+                <span><i class="fas fa-clock"></i> 45 min</span>
+                <span><i class="fas fa-bus"></i> Every 30 min</span>
+              </div>
+              <a href="#" class="book-now-btn" data-departure="antwerp" data-arrival="brussels" data-date="<?= date('Y-m-d', strtotime('+3 days')) ?>">Book Now</a>
+            </div>
+          </div>
+          <div class="offer-card">
+            <img src="frontend/images/london.jpg" alt="London Airport">
+            <div class="offer-badge">Limited Time</div>
+            <div class="offer-content">
+              <div class="offer-price">From €17</div>
+              <h3>London - Stansted Airport</h3>
+              <div class="offer-details">
+                <span><i class="fas fa-clock"></i> 1h 15min</span>
+                <span><i class="fas fa-bus"></i> Every hour</span>
+              </div>
+              <a href="#" class="book-now-btn" data-departure="london" data-arrival="stansted" data-date="<?= date('Y-m-d', strtotime('+5 days')) ?>">Book Now</a>
+            </div>
+          </div>
+          <div class="offer-card">
+            <img src="frontend/images/milan.jpg" alt="Milan Airport">
+            <div class="offer-content">
+              <div class="offer-price">From €9</div>
+              <h3>Milan - Bergamo Airport</h3>
+              <div class="offer-details">
+                <span><i class="fas fa-clock"></i> 1h 30min</span>
+                <span><i class="fas fa-bus"></i> Every 45 min</span>
+              </div>
+              <a href="#" class="book-now-btn" data-departure="milan" data-arrival="bergamo" data-date="<?= date('Y-m-d', strtotime('+7 days')) ?>">Book Now</a>
+            </div>
+          </div>
+          <div class="offer-card">
+            <img src="frontend/images/roma.jpg" alt="Rome Airport">
+            <div class="offer-badge">New Route</div>
+            <div class="offer-content">
+              <div class="offer-price">From €7</div>
+              <h3>Rome - Fiumicino Airport</h3>
+              <div class="offer-details">
+                <span><i class="fas fa-clock"></i> 1h</span>
+                <span><i class="fas fa-bus"></i> Every 20 min</span>
+              </div>
+              <a href="#" class="book-now-btn" data-departure="rome" data-arrival="fiumicino" data-date="<?= date('Y-m-d', strtotime('+2 days')) ?>">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits-section">
+      <div class="container">
+        <h2>Why Choose <span class="highlight">LineBus</span>?</h2>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <i class="fas fa-euro-sign"></i>
+            <h3>Affordable Prices</h3>
+            <p>Competitive rates with no hidden fees. Save up to 40% compared to taxis.</p>
+          </div>
+          <div class="benefit-card">
+            <i class="fas fa-clock"></i>
+            <h3>Frequent Departures</h3>
+            <p>Multiple daily departures to fit your schedule perfectly.</p>
+          </div>
+          <div class="benefit-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Safe & Reliable</h3>
+            <p>Modern vehicles with professional drivers and strict safety standards.</p>
+          </div>
+          <div class="benefit-card">
+            <i class="fas fa-heart"></i>
+            <h3>Happy Customers</h3>
+            <p>Rated 4.8/5 by thousands of satisfied travelers across Europe.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials-section">
+      <div class="container">
+        <h2>What Our <span class="highlight">Customers Say</span></h2>
+        <div class="testimonials-slider">
+          <div class="testimonial-card">
+            <div class="rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>"The most comfortable shuttle service I've used. On time, clean, and with friendly staff!"</p>
+            <div class="customer">
+              <img src="frontend/images/customer1.jpg" alt="Sarah M.">
+              <div>
+                <h4>Sarah M.</h4>
+                <span>Brussels Route</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <p>"Easy online booking and the bus was waiting right on time. Will definitely use again."</p>
+            <div class="customer">
+              <img src="frontend/images/customer2.jpg" alt="James L.">
+              <div>
+                <h4>James L.</h4>
+                <span>London Route</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>"Perfect solution for airport transfers. Much better than dealing with taxis or parking."</p>
+            <div class="customer">
+              <img src="frontend/images/customer3.jpg" alt="Maria K.">
+              <div>
+                <h4>Maria K.</h4>
+                <span>Rome Route</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-section">
+        <h3>LineBus</h3>
+        <p>Your reliable shuttle bus service across Europe. Comfortable, affordable, and convenient transportation solutions.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Timetables</a></li>
+          <li><a href="#">Bus Stops</a></li>
+          <li><a href="#">Manage Booking</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Help Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <ul class="contact-info">
+          <li><i class="fas fa-map-marker-alt"></i> 123 Bus Street, Brussels, Belgium</li>
+          <li><i class="fas fa-phone-alt"></i> +32 123 456 789</li>
+          <li><i class="fas fa-envelope"></i> info@linebus.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2025 LineBus. All rights reserved.| Unitar university assignment project</p>
+        <div class="payment-methods">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-paypal"></i>
+          <i class="fab fa-cc-apple-pay"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Check if user is logged in
+    function checkLogin() {
+      // In a real app, this would check session or localStorage
+      return localStorage.getItem('userLoggedIn') === 'true';
+    }
+
+    // Update UI based on login status
+    function updateLoginStatus() {
+      const isLoggedIn = checkLogin();
+      const loginText = document.getElementById('loginText');
+      
+      if (isLoggedIn) {
+        loginText.textContent = 'My Account';
+        // You could also show the username here if available
+      } else {
+        loginText.textContent = 'Login/Signup';
+      }
+    }
+
+    // Toggle mobile menu
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+      document.querySelector('.main-nav').classList.toggle('show');
+    });
+
+    // Show/hide return date based on trip type
+    const oneWayRadio = document.querySelector('input[value="oneway"]');
+    const returnDateGroup = document.querySelector('.return-date');
+    
+    oneWayRadio.addEventListener('change', function() {
+      if(this.checked) {
+        returnDateGroup.style.display = 'none';
+      }
+    });
+    
+    document.querySelector('input[value="roundtrip"]').addEventListener('change', function() {
+      if(this.checked) {
+        returnDateGroup.style.display = 'block';
+      }
+    });
+
+    // Form submission with SweetAlert
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const departure = this.elements['departure_city'].value;
+      const arrival = this.elements['arrival_city'].value;
+      const date = this.elements['departure_date'].value;
+      
+      if(!departure || !arrival || !date) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please fill in all required fields!',
+        });
+        return;
+      }
+      
+      // Submit the form if validation passes
+      this.submit();
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // City suggestions from database
+    const cities = ['paris', 'frankfurt', 'amsterdam', 'antwerp', 'brussels', 
+                   'london', 'stansted', 'milan', 'bergamo', 'rome', 'fiumicino'];
+
+    function showSuggestions(input, suggestionsContainer) {
+      const inputVal = input.value.toLowerCase();
+      const filteredCities = cities.filter(city => 
+        city.toLowerCase().includes(inputVal)
+        .map(city => city.charAt(0).toUpperCase() + city.slice(1)));
+      
+      suggestionsContainer.innerHTML = '';
+      
+      if (inputVal.length > 1 && filteredCities.length > 0) {
+        filteredCities.forEach(city => {
+          const div = document.createElement('div');
+          div.textContent = city;
+          div.addEventListener('click', () => {
+            input.value = city;
+            suggestionsContainer.innerHTML = '';
+          });
+          suggestionsContainer.appendChild(div);
+        });
+        suggestionsContainer.style.display = 'block';
+      } else {
+        suggestionsContainer.style.display = 'none';
+      }
+    }
+
+    // Setup city suggestions for departure and arrival
+    const departureInput = document.getElementById('departure_city');
+    const arrivalInput = document.getElementById('arrival_city');
+    const departureSuggestions = document.getElementById('departureSuggestions');
+    const arrivalSuggestions = document.getElementById('arrivalSuggestions');
+
+    departureInput.addEventListener('input', () => showSuggestions(departureInput, departureSuggestions));
+    arrivalInput.addEventListener('input', () => showSuggestions(arrivalInput, arrivalSuggestions));
+
+    // Close suggestions when clicking elsewhere
+    document.addEventListener('click', (e) => {
+      if (e.target !== departureInput) {
+        departureSuggestions.style.display = 'none';
+      }
+      if (e.target !== arrivalInput) {
+        arrivalSuggestions.style.display = 'none';
+      }
+    });
+
+    // Handle "Book Now" buttons in offers section
+    document.querySelectorAll('.book-now-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const departure = this.getAttribute('data-departure');
+        const arrival = this.getAttribute('data-arrival');
+        const date = this.getAttribute('data-date');
+        
+        // Fill the form with these values
+        document.getElementById('departure_city').value = departure.charAt(0).toUpperCase() + departure.slice(1);
+        document.getElementById('arrival_city').value = arrival.charAt(0).toUpperCase() + arrival.slice(1);
+        document.querySelector('input[name="departure_date"]').value = date;
+        
+        // Scroll to the booking form
+        document.querySelector('.booking-card').scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Handle Manage Booking button
+    document.getElementById('manageBookingBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      if (checkLogin()) {
+        // Redirect to bookings page if logged in
+        window.location.href = 'frontend/my_bookings.php';
+      } else {
+        // Show login prompt if not logged in
+        Swal.fire({
+          title: 'Login Required',
+          text: 'Please login to view your bookings',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'Login',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'frontend/login_signup.php';
+          }
+        });
+      }
+    });
+
+    // Initialize login status on page load
+    updateLoginStatus();
+  </script>
+</body>
+</html>
